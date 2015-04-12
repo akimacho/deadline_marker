@@ -2,10 +2,23 @@
 % title 'Welcome';
 
 <div data-role="page">
-	<div data-role="header">
+	<div data-role="header" data-position="fixed">
 		<h1>Header</h1>
 	</div>
 	<div data-role="main" class="ui-content">
+
+		<form method="post" action="/register">
+			<div class="ui-field-contain">
+				<label for="name">名前:</label>
+				<input type="text" name="name" id="name" />
+				<label for="event">イベント:</label>
+				<input type="text" name="event" id="event" />
+				<label for="deadline">締切日:</label>
+				<input type="date" data-role="datebox" id="deadline" name="deadline" data-options='{"mode": "datebox"}' />
+			</div>
+			<input type="submit" data-inline="true" value="Submit">
+		</form>
+		
 		<table data-role="table" class="ui-responsive">
 			<thead>
 				<tr>
@@ -29,6 +42,7 @@
 			</tbody>
 		</table>
 	</div>
+	
 	<div data-role="footer">
 		<h1>Footer</h1>
 	</div>

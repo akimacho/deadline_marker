@@ -25,4 +25,6 @@ helper mydecode_utf8 => sub {
 	return decode_utf8($str);
 };
 
+app->secrets(['My very secret passphrase.']);
+
 app->start;
