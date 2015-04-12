@@ -1,15 +1,35 @@
 % layout 'default';
 % title 'Welcome';
 
-<h1>Hello, world!</h1>
-
-<table border="1">
-% while (my $dl = $Deadline->next) {
-<tr>
-	<td><%= myEncode_utf8($dl->name) %></td>
-	<td><%= myEncode_utf8($dl->event) %></td>
-	<td><%= myEncode_utf8($dl->deadline) %></td>
-	<td><%= myEncode_utf8($dl->reg_date) %></td>
-</tr>
-% }
-</table>
+<div data-role="page">
+	<div data-role="header">
+		<h1>Header</h1>
+	</div>
+	<div data-role="main" class="ui-content">
+		<table data-role="table" class="ui-responsive">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>NAME</th>
+					<th>EVENT</th>
+					<th>DEADLINE</th>
+					<th>DATE OF REGISTER</th>
+				</tr>
+			</thead>
+			<tbody>
+				% while (my $dl = $Deadline->next) {
+				<tr>
+					<td><%= mydecode_utf8($dl->id) %></td>
+					<td><%= mydecode_utf8($dl->name) %></td>
+					<td><%= mydecode_utf8($dl->event) %></td>
+					<td><%= mydecode_utf8($dl->deadline) %></td>
+					<td><%= mydecode_utf8($dl->reg_date) %></td>
+				</tr>
+				% }
+			</tbody>
+		</table>
+	</div>
+	<div data-role="footer">
+		<h1>Footer</h1>
+	</div>
+</div>

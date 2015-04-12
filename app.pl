@@ -20,7 +20,7 @@ get '/' => sub {
   $c->render(template => 'index');
 };
 
-helper myEncode_utf8 => sub {
+helper mydecode_utf8 => sub {
 	my ($self, $str) = @_;
 	return decode_utf8($str);
 };
