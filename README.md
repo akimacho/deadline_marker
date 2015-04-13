@@ -10,7 +10,7 @@ TwitterでOAuth認証を行ったユーザから受け取ったイベントと�
 
 ## Licence
 
-[MIT](https://github.com/akimacho/deadline_marker/blob/master/README.md)
+[MIT](https://github.com/akimacho/deadline_marker/blob/master/LICENSE)
 
 ## Author
 
