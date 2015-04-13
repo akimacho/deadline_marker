@@ -6,19 +6,17 @@
 		<h1>Header</h1>
 	</div>
 	<div data-role="main" class="ui-content">
-
 		<form method="post" action="/register">
 			<div class="ui-field-contain">
 				<label for="name">名前:</label>
-				<input type="text" name="name" id="name" />
+				<input type="text" name="name" id="name" placeholder="あなたの名前">
 				<label for="event">イベント:</label>
-				<input type="text" name="event" id="event" />
+				<input type="text" name="event" id="event" placeholder="登録するイベント名">
 				<label for="deadline">締切日:</label>
-				<input type="date" data-role="datebox" id="deadline" name="deadline" data-options='{"mode": "datebox"}' />
+				<input type="date" name="deadline" id="deadline">
 			</div>
 			<input type="submit" data-inline="true" value="Submit">
 		</form>
-		
 		<table data-role="table" class="ui-responsive">
 			<thead>
 				<tr>
@@ -42,7 +40,6 @@
 			</tbody>
 		</table>
 	</div>
-	
 	<div data-role="footer">
 		<h1>Footer</h1>
 	</div>
