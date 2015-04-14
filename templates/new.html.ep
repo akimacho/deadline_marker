@@ -13,8 +13,8 @@
 			<%= $deadline %><br/>
 		</p>
 	</div>
-	<a href="/">トップページへもどる</a>
-	<a href="/account">アカウントページヘもどる</a>
+	<a href="/" data-ajax="false">トップページへもどる</a>
+	<a href="/account" data-ajax="false">アカウントページヘもどる</a>
 	<div data-role="footer">
 		<h1>Footer</h1>
 	</div>

@@ -6,7 +6,11 @@
 		<h1>new</h1>
 	</div>
 	<div data-role="main" class="ui-content">
-		<a href="/">トップページへ</a>
+		<p>
+			こんにちは、  <%= $screen_name %>
+		</p>
+		<a href="/" data-ajax="false">トップページへ</a>
+		<a href="/logout" data-ajax="false">ログアウト</a>
 		<form method="get" action="/account/new">
 			<div class="ui-field-contain">
 				<label for="name">名前:</label>
