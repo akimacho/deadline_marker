@@ -6,6 +6,8 @@ use lib "$FindBin::Bin/lib/";
 use Net::Twitter::Lite;
 use Time::Piece;
 use MyApp::DB;
+use FormValidator::Lite;
+FormValidator::Lite->load_constraints(qw/DATE EMAIL/);
 
 # Documentation browser under "/perldoc"
 plugin 'PODRenderer';
@@ -27,61 +29,44 @@ my $db = MyApp::DB->new({dsn => 'dbi:SQLite:dbname=test.db'});
 
 get '/' => sub {
   my $c = shift;
-	my $itr = $db->search('Deadline', {});
-	$c->stash->{Deadline} = $itr;
+	$c->stash->{Deadline} = $db->search('Deadline', {});
   $c->render(template => 'index');
 };
 
 get '/login' => sub {
 	my $c = shift;
-	my $url = $nt->get_authorization_url(callback => $c->req->url->base . '/callback');
-	$c->session(token => $nt->request_token);
-	$c->session(token_secret => $nt->request_token_secret);
+	my $url = $nt->get_authorization_url(
+		callback => $c->req->url->base . '/callback'
+	);
+	$c->session(
+		token				 => $nt->request_token(),
+		token_secret => $nt->request_token_secret(),
+	);
 	$c->redirect_to($url);
 };
 
 get '/callback' => sub {
 	my $c = shift;
+	# Twitter認証に成功した場合
 	unless ($c->req->param('denied')) {
 		$nt->request_token($c->session('token'));
 		$nt->request_token_secret($c->session('token_secret'));
-		my $verifier = $c->req->param('oauth_verifier');
 		my ($access_token, $access_token_secret, $user_id, $screen_name)
-			= $nt->request_access_token(verifier => $verifier);
-		$c->session(access_token => $access_token);
-		$c->session(access_token_secret => $access_token_secret);
-		$c->session(screen_name => $screen_name);
+			= $nt->request_access_token(verifier => $c->req->param('oauth_verifier'));
+		$c->session(
+			access_token				=> $access_token,
+			access_token_secret => $access_token_secret,
+			user_id							=> $user_id,
+			screen_name					=> $screen_name,
+		);
 		$c->redirect_to('/account');
 	}
+	# Twitter認証に失敗した場合
 	else {
-		$c->redirect_to('/');
+		$c->stash->{Deadline} = $db->search('Deadline', {});
+		$c->stash->{login_failed} = "ログインできませんでした";
+		return $c->render(template => 'index');
 	}
-};
-
-get '/admin' => sub {
-	my $c = shift;
-	my $usr = $c->req->param('usr') || '';
-	my $pwd = $c->req->param('pwd') || '';
-	if (decode_utf8($usr) eq decode_utf8($config->{usr})
-				 && decode_utf8($pwd) eq decode_utf8($config->{pwd})) {
-		$c->session(admin => 1);
-		my $itr = $db->search('Deadline', {});
-		$c->stash->{Deadline} = $itr;
-		$c->render(template => 'admin');
-	}
-	else {
-		$c->session(admin => 0);
-		$c->redirect_to('/');
-	}
-};
-
-get '/admin/del' => sub {
-	my $c = shift;
-	if ($c->session('admin')) {
-		my $num = $c->req->param('del');
-		$db->delete('Deadline', {id => $num});
-  }
-	$c->redirect_to('/admin');
 };
 
 get '/logout' => sub {
@@ -92,35 +77,55 @@ get '/logout' => sub {
 
 get '/account' => sub {
 	my $c = shift;
+	# ログイン済みである場合
 	if($c->session('access_token')) {
-		$nt->access_token($c->session('access_token'));
-		$nt->access_token_secret($c->session('access_token_secret'));
 		$c->stash->{screen_name} = $c->session('screen_name');
 		$c->render(template => 'account');
 	}
+	# ログインされていない場合
 	else {
 		$c->redirect_to('/');
 	}
 };
 
-get '/account/new' => sub {
+post '/account' => sub {
 	my $c = shift;
+	# ログイン済みである場合
 	if ($c->session('access_token')) {
-		my $event = $c->req->param('event');
-		my $deadline = $c->req->param('deadline');
-		my $t = localtime;
-		my $reg_date_str = $t->year . '-' . $t->mon . '-' . $t->mday;	
-		$db->insert('Deadline', {
-			name => $c->session('screen_name'),
-			event => $event,
-			deadline => $deadline,
-			reg_date => $reg_date_str,
-		});
-		$c->stash->{name} = '@' . $c->session('screen_name');
-		$c->stash->{event} = $event;
-		$c->stash->{deadline} = $deadline;
-		$c->render(template => 'new');
+		$c->stash->{screen_name} = $c->session('screen_name');
+		my $validator = FormValidator::Lite->new($c->req);
+		$validator->load_function_message('ja');
+		$validator->set_param_message(
+			event => 'イベントまたは講義名',
+			date => '日付',
+		);
+		my $res = $validator->check(
+			event => [qw/NOT_NULL/],
+			date => [qw/NOT_NULL DATE/],
+		);
+		if ($validator->has_error) {
+			my $messages = $validator->get_error_messages();
+			$c->stash->{messages} = $messages;
+			return $c->render(template => 'account');
+		}
+		else {
+			my $event = $c->req->param('event');
+			my $deadline = $c->req->param('deadline');
+			my $t = localtime;
+			# 年-月-日-時-分-秒
+			my $reg_date =
+				join('-', ($t->year, $t->mon, $t->mday, $t->hour, $t->min, $t->sec));
+			$db->insert('Deadline', {
+				name		 => $c->session('screen_name'),
+				event		 => $event,
+				deadline => $deadline,
+				reg_date => $reg_date,
+			});
+			$c->stash->{messages} = [qw/締切日の入力を受付ました/];
+			return $c->render(template => 'account');
+		}
 	}
+	# ログインされていない場合
 	else {
 		$c->redirect_to('/');
 	}

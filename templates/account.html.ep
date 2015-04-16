@@ -1,5 +1,6 @@
 % layout 'default';
 % title 'account';
+% my $messages = $c->stash->{messages} || [];
 
 <div data-role="page">
 	<div data-role="header" data-position="fixed">
@@ -11,13 +12,18 @@
 		</p>
 		<a href="/" data-ajax="false">トップページへ</a>
 		<a href="/logout" data-ajax="false">ログアウト</a>
-		<form method="get" action="/account/new">
+		<form method="post" action="/account">
 			<div class="ui-field-contain">
 				<label for="event">イベント:</label>
 				<input type="text" name="event" id="event" placeholder="登録するイベント名">
 				<label for="deadline">締切日:</label>
 				<input type="date" name="deadline" id="deadline">
 			</div>
+			<ul>
+				% for my $message (@$messages) {
+			  <li><%= $message %></li>
+				% }
+			</ul>
 			<input type="submit" data-inline="true" value="Submit">
 		</form>
 	</div>

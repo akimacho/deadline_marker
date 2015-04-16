@@ -1,5 +1,6 @@
 % layout 'default';
 % title 'Welcome';
+% my $error = $c->stash->{login_failed} || '';
 
 <div data-role="page">
 	<div data-role="header" data-position="fixed">
@@ -7,13 +8,14 @@
 	</div>
 	<div data-role="main" class="ui-content">
 		<a href="/login" data-ajax="false">ログイン</a>
+		<p><%= $error %></p>
 		<table data-role="table" class="ui-responsive">
 			<thead>
 				<tr>
 					<th>ID</th>
-					<th>NAME</th>
-					<th>EVENT</th>
-					<th>DEADLINE</th>
+					<th>登録者</th>
+					<th>イベント名</th>
+					<th>締切日</th>
 				</tr>
 			</thead>
 			<tbody>
