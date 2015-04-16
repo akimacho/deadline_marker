@@ -1,12 +1,13 @@
 % layout 'default';
-% title 'Welcome';
+% title 'admin';
 
 <div data-role="page">
 	<div data-role="header" data-position="fixed">
-		<h1>Top page</h1>
+		<h1>admin</h1>
 	</div>
 	<div data-role="main" class="ui-content">
-		<a href="/login" data-ajax="false">ログイン</a>
+		<a href="/" data-ajax="false">トップページへ</a>
+		<a href="/logout" data-ajax="false">ログアウト</a>
 		<table data-role="table" class="ui-responsive">
 			<thead>
 				<tr>
@@ -14,6 +15,7 @@
 					<th>NAME</th>
 					<th>EVENT</th>
 					<th>DEADLINE</th>
+					<th>REGISTER_DATE</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -21,13 +23,18 @@
 				<tr>
 					<td><%= mydecode_utf8($dl->id) %></td>
 					<td><a href='http://twitter.com/<%= mydecode_utf8($dl->name) %>'>
-							@<%= mydecode_utf8($dl->name) %></a></td>
+							<%= mydecode_utf8($dl->name) %></a></td>
 					<td><%= mydecode_utf8($dl->event) %></td>
 					<td><%= mydecode_utf8($dl->deadline) %></td>
+					<td><%= mydecode_utf8($dl->reg_date) %></td>
 				</tr>
 				% }
 			</tbody>
 		</table>
+    <form action="/admin/del" method="get">
+		 	<input type="text" name="del">
+			<input type="submit" value="削除する">
+		</form>
 	</div>
 	<div data-role="footer">
 		<h1>Footer</h1>

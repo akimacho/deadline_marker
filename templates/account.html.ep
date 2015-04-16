@@ -7,14 +7,12 @@
 	</div>
 	<div data-role="main" class="ui-content">
 		<p>
-			こんにちは、  <%= $screen_name %>
+			こんにちは、<a href="http://twitter.com/<%= $screen_name %>">@<%= $screen_name %></a> さん
 		</p>
 		<a href="/" data-ajax="false">トップページへ</a>
 		<a href="/logout" data-ajax="false">ログアウト</a>
 		<form method="get" action="/account/new">
 			<div class="ui-field-contain">
-				<label for="name">名前:</label>
-				<input type="text" name="name" id="name" placeholder="あなたの名前">
 				<label for="event">イベント:</label>
 				<input type="text" name="event" id="event" placeholder="登録するイベント名">
 				<label for="deadline">締切日:</label>
