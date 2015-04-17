@@ -7,7 +7,6 @@ use Net::Twitter::Lite;
 use Time::Piece;
 use MyApp::DB;
 use FormValidator::Lite;
-FormValidator::Lite->load_constraints(qw/DATE EMAIL/);
 
 # Documentation browser under "/perldoc"
 plugin 'PODRenderer';
@@ -30,6 +29,8 @@ my $db = MyApp::DB->new({dsn => 'dbi:SQLite:dbname=test.db'});
 get '/' => sub {
   my $c = shift;
 	$c->stash->{Deadline} = $db->search('Deadline', {});
+	# すでにログインされているかどうか
+	$c->stash->{is_login} = $c->session('access_token') ? 1 : 0;
   $c->render(template => 'index');
 };
 
@@ -65,14 +66,18 @@ get '/callback' => sub {
 	else {
 		$c->stash->{Deadline} = $db->search('Deadline', {});
 		$c->stash->{login_failed} = "ログインできませんでした";
-		return $c->render(template => 'index');
+		$c->stash->{is_login} = $c->session('access_token') ? 1 : 0;
+		$c->render(template => 'index');
 	}
 };
 
 get '/logout' => sub {
 	my $c = shift;
 	$c->session(expires => 1);
-	$c->redirect_to('/');
+	$c->stash->{Deadline} = $db->search('Deadline', {});
+	$c->stash->{logout_ok} = "ログアウトしました";
+	$c->stash->{is_login} = $c->session('access_token') ? 1 : 0;
+	return $c->render(template => 'index');
 };
 
 get '/account' => sub {
@@ -82,8 +87,7 @@ get '/account' => sub {
 		$c->stash->{screen_name} = $c->session('screen_name');
 		$c->render(template => 'account');
 	}
-	# ログインされていない場合
-	else {
+	else {# ログインされていない場合
 		$c->redirect_to('/');
 	}
 };
@@ -96,23 +100,24 @@ post '/account' => sub {
 		my $validator = FormValidator::Lite->new($c->req);
 		$validator->load_function_message('ja');
 		$validator->set_param_message(
-			event => 'イベントまたは講義名',
-			date => '日付',
+			event		 => 'イベント',
+			deadline => '日付',
 		);
 		my $res = $validator->check(
 			event => [qw/NOT_NULL/],
-			date => [qw/NOT_NULL DATE/],
+			deadline => [qw/NOT_NULL/],
 		);
+		# バリデーションに失敗した場合
 		if ($validator->has_error) {
 			my $messages = $validator->get_error_messages();
 			$c->stash->{messages} = $messages;
 			return $c->render(template => 'account');
 		}
-		else {
+		else {# バリデーションに成功した場合
 			my $event = $c->req->param('event');
 			my $deadline = $c->req->param('deadline');
 			my $t = localtime;
-			# 年-月-日-時-分-秒
+			# 日時の形式 : 年-月-日-時-分-秒
 			my $reg_date =
 				join('-', ($t->year, $t->mon, $t->mday, $t->hour, $t->min, $t->sec));
 			$db->insert('Deadline', {
@@ -121,7 +126,7 @@ post '/account' => sub {
 				deadline => $deadline,
 				reg_date => $reg_date,
 			});
-			$c->stash->{messages} = [qw/締切日の入力を受付ました/];
+			$c->stash->{messages} = [qw/締切日の入力を受け取りました/];
 			return $c->render(template => 'account');
 		}
 	}

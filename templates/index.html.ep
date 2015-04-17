@@ -1,13 +1,20 @@
 % layout 'default';
 % title 'Welcome';
 % my $error = $c->stash->{login_failed} || '';
+% my $logout_msg = $c->stash->{logout_ok} || '';
 
 <div data-role="page">
 	<div data-role="header" data-position="fixed">
 		<h1>Top page</h1>
+		% if ($is_login) {
+		<a href="/logout" data-ajax="false" class="ut-btn ui-btn-right">ログアウト</a>
+		% }
+		% else {
+		<a href="/login" data-ajax="false" class="ut-btn ui-btn-right">ログイン</a>
+		% }
 	</div>
 	<div data-role="main" class="ui-content">
-		<a href="/login" data-ajax="false">ログイン</a>
+		<p><%= $logout_msg %></p>
 		<p><%= $error %></p>
 		<table data-role="table" class="ui-responsive">
 			<thead>

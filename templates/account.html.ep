@@ -5,13 +5,13 @@
 <div data-role="page">
 	<div data-role="header" data-position="fixed">
 		<h1>new</h1>
+		<a href="/" class="ui-btn ui-btn-left" data-ajax="false">トップページへ</a>
+		<a href="/logout" class="ui-btn ui-btn-right" data-ajax="false">ログアウト</a>
 	</div>
 	<div data-role="main" class="ui-content">
 		<p>
 			こんにちは、<a href="http://twitter.com/<%= $screen_name %>">@<%= $screen_name %></a> さん
 		</p>
-		<a href="/" data-ajax="false">トップページへ</a>
-		<a href="/logout" data-ajax="false">ログアウト</a>
 		<form method="post" action="/account">
 			<div class="ui-field-contain">
 				<label for="event">イベント:</label>
@@ -24,8 +24,11 @@
 			  <li><%= $message %></li>
 				% }
 			</ul>
-			<input type="submit" data-inline="true" value="Submit">
+			<input type="submit" data-inline="true" value="登録する">
 		</form>
+		<p>
+			他人への誹謗中傷や反社会的な書き込みはお控えください
+		</p>
 	</div>
 	<div data-role="footer">
 		<h1>Footer</h1>
