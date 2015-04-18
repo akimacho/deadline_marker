@@ -5,8 +5,10 @@
 <div data-role="page">
 	<div data-role="header" data-position="fixed">
 		<h1>new</h1>
-		<a href="/" class="ui-btn ui-btn-left" data-ajax="false">トップページへ</a>
-		<a href="/logout" class="ui-btn ui-btn-right" data-ajax="false">ログアウト</a>
+		<a href="/" class="ui-btn ui-btn-left ui-btn-inline ui-shadow ui-corner-all"
+			 data-ajax="false">トップページへ</a>
+		<a href="/logout" class="ui-btn ui-btn-right ui-btn-inline ui-shadow ui-corner-all"
+			 data-ajax="false">ログアウト</a>
 	</div>
 	<div data-role="main" class="ui-content">
 		<p>

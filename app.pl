@@ -48,8 +48,7 @@ get '/login' => sub {
 
 get '/callback' => sub {
 	my $c = shift;
-	# Twitter認証に成功した場合
-	unless ($c->req->param('denied')) {
+	unless ($c->req->param('denied')) {# Twitter認証に成功した場合
 		$nt->request_token($c->session('token'));
 		$nt->request_token_secret($c->session('token_secret'));
 		my ($access_token, $access_token_secret, $user_id, $screen_name)
@@ -62,8 +61,7 @@ get '/callback' => sub {
 		);
 		$c->redirect_to('/account');
 	}
-	# Twitter認証に失敗した場合
-	else {
+	else {# Twitter認証に失敗した場合
 		$c->stash->{Deadline} = $db->search('Deadline', {});
 		$c->stash->{login_failed} = "ログインできませんでした";
 		$c->stash->{is_login} = $c->session('access_token') ? 1 : 0;
@@ -73,17 +71,21 @@ get '/callback' => sub {
 
 get '/logout' => sub {
 	my $c = shift;
-	$c->session(expires => 1);
-	$c->stash->{Deadline} = $db->search('Deadline', {});
-	$c->stash->{logout_ok} = "ログアウトしました";
-	$c->stash->{is_login} = $c->session('access_token') ? 1 : 0;
-	return $c->render(template => 'index');
+	if($c->session('access_token')) {# ログイン済みである場合
+		$c->session(expires => 1);
+		$c->stash->{Deadline} = $db->search('Deadline', {});
+		$c->stash->{logout_ok} = "ログアウトしました";
+		$c->stash->{is_login} = 0;
+		$c->render(template => 'index');
+	}
+	else {# ログインされていない場合
+		$c->redirect_to('/');
+	}
 };
 
 get '/account' => sub {
 	my $c = shift;
-	# ログイン済みである場合
-	if($c->session('access_token')) {
+	if($c->session('access_token')) {# ログイン済みである場合
 		$c->stash->{screen_name} = $c->session('screen_name');
 		$c->render(template => 'account');
 	}
@@ -120,6 +122,7 @@ post '/account' => sub {
 			# 日時の形式 : 年-月-日-時-分-秒
 			my $reg_date =
 				join('-', ($t->year, $t->mon, $t->mday, $t->hour, $t->min, $t->sec));
+			# 登録者名,イベント名,締切日,登録日を登録する
 			$db->insert('Deadline', {
 				name		 => $c->session('screen_name'),
 				event		 => $event,
@@ -141,6 +144,6 @@ helper mydecode_utf8 => sub {
 	return decode_utf8($str);
 };
 
-app->sessions->default_expiration(300);
+app->sessions->default_expiration(240);
 app->secrets([$config->{secret_password}]);
 app->start;
