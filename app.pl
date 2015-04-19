@@ -36,9 +36,7 @@ get '/' => sub {
 
 get '/login' => sub {
 	my $c = shift;
-	my $url = $nt->get_authorization_url(
-		callback => $c->req->url->base . '/callback'
-	);
+	my $url = $nt->get_authorization_url(callback => $c->req->url->base() . '/callback');
 	$c->session(
 		token				 => $nt->request_token(),
 		token_secret => $nt->request_token_secret(),
@@ -96,8 +94,7 @@ get '/account' => sub {
 
 post '/account' => sub {
 	my $c = shift;
-	# ログイン済みである場合
-	if ($c->session('access_token')) {
+	if ($c->session('access_token')) {# ログイン済みである場合
 		$c->stash->{screen_name} = $c->session('screen_name');
 		my $validator = FormValidator::Lite->new($c->req);
 		$validator->load_function_message('ja');
@@ -109,8 +106,7 @@ post '/account' => sub {
 			event => [qw/NOT_NULL/],
 			deadline => [qw/NOT_NULL/],
 		);
-		# バリデーションに失敗した場合
-		if ($validator->has_error) {
+		if ($validator->has_error) {# バリデーションに失敗した場合
 			my $messages = $validator->get_error_messages();
 			$c->stash->{messages} = $messages;
 			return $c->render(template => 'account');
@@ -133,8 +129,7 @@ post '/account' => sub {
 			return $c->render(template => 'account');
 		}
 	}
-	# ログインされていない場合
-	else {
+	else {# ログインされていない場合
 		$c->redirect_to('/');
 	}
 };
