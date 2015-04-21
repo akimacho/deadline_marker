@@ -60,7 +60,7 @@ get '/callback' => sub {
 		$c->redirect_to('/account');
 	}
 	else {# Twitter認証に失敗した場合
-		$c->stash->{Deadline} = $db->search('Deadline', {});
+		$c->stash->{Deadline}			= $db->search('Deadline', {});
 		$c->stash->{login_failed} = "ログインできませんでした";
 		$c->stash->{is_login} = $c->session('access_token') ? 1 : 0;
 		$c->render(template => 'index');
@@ -71,9 +71,9 @@ get '/logout' => sub {
 	my $c = shift;
 	if($c->session('access_token')) {# ログイン済みである場合
 		$c->session(expires => 1);
-		$c->stash->{Deadline} = $db->search('Deadline', {});
+		$c->stash->{Deadline}	 = $db->search('Deadline', {});
 		$c->stash->{logout_ok} = "ログアウトしました";
-		$c->stash->{is_login} = 0;
+		$c->stash->{is_login}	 = 0;
 		$c->render(template => 'index');
 	}
 	else {# ログインされていない場合
@@ -103,16 +103,15 @@ post '/account' => sub {
 			deadline => '日付',
 		);
 		my $res = $validator->check(
-			event => [qw/NOT_NULL/],
+			event		 => [qw/NOT_NULL/],
 			deadline => [qw/NOT_NULL/],
 		);
 		if ($validator->has_error) {# バリデーションに失敗した場合
-			my $messages = $validator->get_error_messages();
-			$c->stash->{messages} = $messages;
+			$c->stash->{messages} = $validator->get_error_messages();;
 			return $c->render(template => 'account');
 		}
 		else {# バリデーションに成功した場合
-			my $event = $c->req->param('event');
+			my $event		 = $c->req->param('event');
 			my $deadline = $c->req->param('deadline');
 			my $t = localtime;
 			# 日時の形式 : 年-月-日-時-分-秒

@@ -26,7 +26,7 @@
 			  <li><%= $message %></li>
 				% }
 			</ul>
-			<input type="submit" data-inline="true" value="登録する">
+			<input type="submit" data-inline="true" value="登録する" id="submit_btn">
 		</form>
 		<p>
 			他人への誹謗中傷や反社会的な書き込みはお控えください
