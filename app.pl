@@ -7,6 +7,7 @@ use Net::Twitter::Lite;
 use Time::Piece;
 use MyApp::DB;
 use FormValidator::Lite;
+use DDP {deparse => 1,};
 
 # Documentation browser under "/perldoc"
 plugin 'PODRenderer';
@@ -24,13 +25,14 @@ my $nt = Net::Twitter::Lite->new(
 	ssl										=> 1,
 );
 
-my $db = MyApp::DB->new({dsn => 'dbi:SQLite:dbname=test.db'});
+my $db = MyApp::DB->new({dsn => 'dbi:SQLite:dbname=events.db'});
+
+app->sessions->default_expiration(300);
+app->secrets([$config->{secret_password}]);
 
 get '/' => sub {
   my $c = shift;
-	$c->stash->{Deadline} = $db->search('Deadline', {});
-	# すでにログインされているかどうか
-	$c->stash->{is_login} = $c->session('access_token') ? 1 : 0;
+	$c->stash->{deadlines} = $db->search('Deadline', {});
   $c->render(template => 'index');
 };
 
@@ -60,10 +62,7 @@ get '/callback' => sub {
 		$c->redirect_to('/account');
 	}
 	else {# Twitter認証に失敗した場合
-		$c->stash->{Deadline}			= $db->search('Deadline', {});
-		$c->stash->{login_failed} = "ログインできませんでした";
-		$c->stash->{is_login} = $c->session('access_token') ? 1 : 0;
-		$c->render(template => 'index');
+		$c->redirect_to('/');
 	}
 };
 
@@ -71,10 +70,7 @@ get '/logout' => sub {
 	my $c = shift;
 	if($c->session('access_token')) {# ログイン済みである場合
 		$c->session(expires => 1);
-		$c->stash->{Deadline}	 = $db->search('Deadline', {});
-		$c->stash->{logout_ok} = "ログアウトしました";
-		$c->stash->{is_login}	 = 0;
-		$c->render(template => 'index');
+		$c->redirect_to('/');
 	}
 	else {# ログインされていない場合
 		$c->redirect_to('/');
@@ -84,7 +80,6 @@ get '/logout' => sub {
 get '/account' => sub {
 	my $c = shift;
 	if($c->session('access_token')) {# ログイン済みである場合
-		$c->stash->{screen_name} = $c->session('screen_name');
 		$c->render(template => 'account');
 	}
 	else {# ログインされていない場合
@@ -95,36 +90,40 @@ get '/account' => sub {
 post '/account' => sub {
 	my $c = shift;
 	if ($c->session('access_token')) {# ログイン済みである場合
-		$c->stash->{screen_name} = $c->session('screen_name');
 		my $validator = FormValidator::Lite->new($c->req);
 		$validator->load_function_message('ja');
 		$validator->set_param_message(
-			event		 => 'イベント',
-			deadline => '日付',
+			title		 => 'イベント',
+			date => '日付',
 		);
 		my $res = $validator->check(
-			event		 => [qw/NOT_NULL/],
-			deadline => [qw/NOT_NULL/],
+			title		 => [qw/NOT_NULL/],
+			date => [qw/NOT_NULL/],
 		);
 		if ($validator->has_error) {# バリデーションに失敗した場合
 			$c->stash->{messages} = $validator->get_error_messages();;
 			return $c->render(template => 'account');
 		}
 		else {# バリデーションに成功した場合
-			my $event		 = $c->req->param('event');
-			my $deadline = $c->req->param('deadline');
+			my $event_title = $c->req->param('title');
+			my $event_date = $c->req->param('date');
+			my $event_sense = $c->req->param('event_sense');
+			my $description = $c->req->param('description');
 			my $t = localtime;
-			# 日時の形式 : 年-月-日-時-分-秒
 			my $reg_date =
 				join('-', ($t->year, $t->mon, $t->mday, $t->hour, $t->min, $t->sec));
-			# 登録者名,イベント名,締切日,登録日を登録する
 			$db->insert('Deadline', {
-				name		 => $c->session('screen_name'),
-				event		 => $event,
-				deadline => $deadline,
-				reg_date => $reg_date,
+				screen_name		 => $c->session('screen_name'),
+				event_title		 => $event_title,
+				user_id => $c->session('user_id'),
+				event_date => $event_date,
+				event_sense => $event_sense,
+				event_description => $description,
+				good => 0,
+				bad => 0,
+				registration_date => $reg_date,
 			});
-			$c->stash->{messages} = [qw/締切日の入力を受け取りました/];
+			$c->stash->{messages} = [qw/入力を受付けました/];
 			return $c->render(template => 'account');
 		}
 	}
@@ -133,11 +132,17 @@ post '/account' => sub {
 	}
 };
 
+get '/entry/:id' => sub {
+	my $c = shift;
+	my $id = $c->stash->{id};
+	my $itr = $db->search('Deadline', {id => $id},);
+	$c->stash->{deadline} = $itr->first->{row_data};
+	$c->render(template => 'entry');
+};
+
 helper mydecode_utf8 => sub {
 	my ($self, $str) = @_;
 	return decode_utf8($str);
 };
 
-app->sessions->default_expiration(240);
-app->secrets([$config->{secret_password}]);
 app->start;

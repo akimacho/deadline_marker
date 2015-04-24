@@ -1,10 +1,11 @@
 % layout 'default';
 % title 'account';
+% my $screen_name = $c->session('screen_name') || '';
 % my $messages = $c->stash->{messages} || [];
 
 <div data-role="page">
 	<div data-role="header" data-position="fixed">
-		<h1>new</h1>
+		<h1>鬱info</h1>
 		<a href="/" class="ui-btn ui-btn-left ui-btn-inline ui-shadow ui-corner-all"
 			 data-ajax="false">トップページへ</a>
 		<a href="/logout" class="ui-btn ui-btn-right ui-btn-inline ui-shadow ui-corner-all"
@@ -12,15 +13,25 @@
 	</div>
 	<div data-role="main" class="ui-content">
 		<p>
-			こんにちは、<a href="http://twitter.com/<%= $screen_name %>">@<%= $screen_name %></a> さん
+			こんにちは、
+			<a href="http://twitter.com/<%= $screen_name %>">@<%= $screen_name %></a> さん
 		</p>
 		<form method="post" action="/account">
 			<div class="ui-field-contain">
-				<label for="event">イベント:</label>
-				<input type="text" name="event" id="event" placeholder="登録するイベント名">
-				<label for="deadline">締切日:</label>
-				<input type="date" name="deadline" id="deadline">
+				<label for="title">イベント:</label>
+				<input type="text" name="title" id="title" placeholder="登録するイベント名">
+				<label for="date">日付:</label>
+				<input type="date" name="date" id="date">
 			</div>
+			<fieldset data-role="controlgroup">
+				<legend>イベントの種類を選んでください</legend>
+				<label for="countdown">カウントダウンを行う（試験・締切日など）</label>
+				<input type="radio" name="event_sense" id="countdown" value="countdown" checked="checked">
+				<label for="nocount">カウントダウンを行わない（休講日など）</label>
+				<input type="radio" name="event_sense" id="nocount" value="">
+			</fieldset>
+			<label for="description">詳細:</label>
+			<input type="text" name="description" id="description" value="">
 			<ul>
 				% for my $message (@$messages) {
 			  <li><%= $message %></li>
@@ -33,6 +44,6 @@
 		</p>
 	</div>
 	<div data-role="footer">
-		<h1>Footer</h1>
+		<h1>footer</h1>
 	</div>
 </div>

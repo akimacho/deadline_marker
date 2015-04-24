@@ -1,5 +1,14 @@
 % layout 'default';
-% title 'Welcome';
+% title 'entry';
+% my ($year, $month, $day) = split('-', $deadline->{registration_date});
+% my $date = $year . '年' . $month . '月' . $day . '日';
+% my $event_sense = '';
+% if ($deadline->{event_sense} eq 'countdown') {
+%   $event_sense = 'カウントダウンを行う';
+% }
+% else {
+%   $event_sense = 'カウントダウンを行わない';
+% }
 
 <div data-role="page">
 	<div data-role="header" data-position="fixed">
@@ -18,33 +27,28 @@
 	</div>
 	<div data-role="main" class="ui-content">
 		<table data-role="table"
-           class="ui-responsive ui-shadow table-stroke list">
+           data-mode="reflow">
 			<thead>
 				<tr>
 					<th>ID</th>
 					<th>登録者</th>
 					<th>イベント名</th>
-					<th>締切日</th>
+					<th>イベント日時</th>
+					<th>イベントの詳細</th>
+          <th>botの動作</th>
+					<th>登録日</th>
 				</tr>
 			</thead>
 			<tbody>
-				% while (my $dl = $deadlines->next) {
 				<tr>
-					<td>
-						<%= mydecode_utf8($dl->id) %>
-					</td>
-					<td>
-						<a href='http://twitter.com/<%= mydecode_utf8($dl->screen_name) %>'>
-							@<%= mydecode_utf8($dl->screen_name) %></a>
-					</td>
-					<td>
-						<a href='/entry/<%= $dl->id %>'><%= mydecode_utf8($dl->event_title) %></a>
-					</td>
-					<td>
-						<%= mydecode_utf8($dl->event_date) %>
-					</td>
+					<th><%= mydecode_utf8($deadline->{id}) %></th>
+					<td>@<%= mydecode_utf8($deadline->{screen_name}) %></td>
+					<td><%= mydecode_utf8($deadline->{event_title}) %></td>
+					<td><%= mydecode_utf8($deadline->{event_date}) %></td>
+					<td><%= mydecode_utf8($deadline->{event_description}) %></td>
+          <td><%= $event_sense %></td>
+					<td><%= $date %></td>
 				</tr>
-				% }
 			</tbody>
 		</table>
 		<p>注意:ここで公開されている情報は参考程度にとどめてください</p>
