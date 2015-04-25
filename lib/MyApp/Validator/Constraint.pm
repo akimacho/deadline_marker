@@ -8,7 +8,7 @@ use utf8;
 use Encode qw/decode_utf8/;
 
 my $db = MyApp::Validator::Words->new({
-	dsn			 => 'dbi:SQLite:dbname=test.db',
+	dsn			 => 'dbi:SQLite:dbname=words.db',
 	username => '',
 	password => '',
 });
