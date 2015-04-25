@@ -14,9 +14,9 @@
 	<div data-role="header" data-position="fixed">
 		<h1>鬱info</h1>
 		% if ($c->session('access_token')) {
-		<a href="/account" data-ajax="false"
-			 class="ui-btn ui-btn-left ui-btn-inline ui-shadow ui-corner-all">
-			アカウント</a>
+		<a href="/" data-ajax="false"
+			 class="ui-btn ui-btn-inline ui-shadow ui-corner-all">
+			トップページ</a>
 		<a href="/logout" data-ajax="false"
 			 class="ut-btn ui-btn-right ui-btn-inline ui-shadow ui-corner-all">
 			ログアウト</a>

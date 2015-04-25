@@ -17,32 +17,19 @@
 		% }
 	</div>
 	<div data-role="main" class="ui-content">
-		<table data-role="table"
-           class="ui-responsive ui-shadow table-stroke list">
+		<table data-role="table" class="ui-responsive ui-shadow table-stroke list">
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>登録者</th>
-					<th>イベント名</th>
-					<th>締切日</th>
+					<th>ID</th><th>登録者</th><th>イベント名</th><th>日付</th>
 				</tr>
 			</thead>
 			<tbody>
 				% while (my $dl = $deadlines->next) {
 				<tr>
-					<td>
-						<%= mydecode_utf8($dl->id) %>
-					</td>
-					<td>
-						<a href='http://twitter.com/<%= mydecode_utf8($dl->screen_name) %>'>
-							@<%= mydecode_utf8($dl->screen_name) %></a>
-					</td>
-					<td>
-						<a href='/entry/<%= $dl->id %>'><%= mydecode_utf8($dl->event_title) %></a>
-					</td>
-					<td>
-						<%= mydecode_utf8($dl->event_date) %>
-					</td>
+					<td><%= mydecode_utf8($dl->id) %></td>
+					<td><a href='http://twitter.com/<%= mydecode_utf8($dl->screen_name) %>'>@<%= mydecode_utf8($dl->screen_name) %></a></td>
+					<td><a href='/entry/<%= $dl->id %>'><%= mydecode_utf8($dl->event_title) %></a></td>
+					<td><%= mydecode_utf8($dl->event_date) %></td>
 				</tr>
 				% }
 			</tbody>

@@ -7,7 +7,7 @@
 	<div data-role="header" data-position="fixed">
 		<h1>鬱info</h1>
 		<a href="/" class="ui-btn ui-btn-left ui-btn-inline ui-shadow ui-corner-all"
-			 data-ajax="false">トップページへ</a>
+			 data-ajax="false">トップページ</a>
 		<a href="/logout" class="ui-btn ui-btn-right ui-btn-inline ui-shadow ui-corner-all"
 			 data-ajax="false">ログアウト</a>
 	</div>
@@ -18,15 +18,16 @@
 		</p>
 		<form method="post" action="/account">
 			<div class="ui-field-contain">
-				<label for="title">イベント:</label>
+				<label for="title">イベント*</label>
 				<input type="text" name="title" id="title" placeholder="登録するイベント名">
-				<label for="date">日付:</label>
-				<input type="date" name="date" id="date">
+				<label for="date">日付*</label>
+				<input type="text" data-role="datebox" name="date" data-options='{"mode":"calbox"}'>
 			</div>
 			<fieldset data-role="controlgroup">
 				<legend>イベントの種類を選んでください</legend>
 				<label for="countdown">カウントダウンを行う（試験・締切日など）</label>
-				<input type="radio" name="event_sense" id="countdown" value="countdown" checked="checked">
+				<input type="radio" name="event_sense"
+							 id="countdown" value="countdown" checked="checked">
 				<label for="nocount">カウントダウンを行わない（休講日など）</label>
 				<input type="radio" name="event_sense" id="nocount" value="">
 			</fieldset>
