@@ -25,7 +25,11 @@ my $nt = Net::Twitter::Lite->new(
 	ssl										=> 1,
 );
 
-my $db = MyApp::DB->new({dsn => 'dbi:SQLite:dbname=events.db'});
+my $db = MyApp::DB->new({
+	dsn			 => 'dbi:SQLite:dbname=events.db',
+	username => '',
+	password => ''
+});
 
 get '/' => sub {
   my $c = shift;
