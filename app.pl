@@ -144,6 +144,14 @@ helper mydecode_utf8 => sub {
 	return decode_utf8($str);
 };
 
+helper getJPNDate => sub {
+	my ($self, $event_date) = @_;
+	my ($year, $month, $day) = split(/-/, $event_date);
+	my $date = localtime->strptime($year . '-' . $month . '-' . $day, '%Y-%m-%d');
+	my $wday = $date->wdayname(qw/日 月 火 水 木 金 土/);
+	return $year . "年" . $month . "月" . $day . "日" . "(" . $wday . ")";
+};
+
 app->sessions->default_expiration(300);
 app->secrets([$config->{secret_password}]);
 app->start;

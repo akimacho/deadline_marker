@@ -17,6 +17,7 @@
 		% }
 	</div>
 	<div data-role="main" class="ui-content">
+		<p>宇都宮大学情報工学科でのレポートや試験、休講情報を集めています</p>
 		<table data-role="table" class="ui-responsive ui-shadow table-stroke list">
 			<thead>
 				<tr>
@@ -29,7 +30,7 @@
 					<td><%= mydecode_utf8($dl->id) %></td>
 					<td><a href='http://twitter.com/<%= mydecode_utf8($dl->screen_name) %>'>@<%= mydecode_utf8($dl->screen_name) %></a></td>
 					<td><a href='/entry/<%= $dl->id %>'><%= mydecode_utf8($dl->event_title) %></a></td>
-					<td><%= mydecode_utf8($dl->event_date) %></td>
+					<td><%= getJPNDate($dl->event_date) %></td>
 				</tr>
 				% }
 			</tbody>

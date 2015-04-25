@@ -1,8 +1,6 @@
 % layout 'default';
 % title 'entry';
-% my ($year, $month, $day) = split('-', $deadline->{registration_date});
-% my $date = $year . '年' . $month . '月' . $day . '日';
-% my $event_sense = '';
+%  my $event_sense = '';
 % if ($deadline->{event_sense} eq 'countdown') {
 %   $event_sense = 'カウントダウンを行う';
 % }
@@ -42,12 +40,12 @@
 			<tbody>
 				<tr>
 					<th><%= mydecode_utf8($deadline->{id}) %></th>
-					<td>@<%= mydecode_utf8($deadline->{screen_name}) %></td>
+					<td><a href='http://twitter.com/<%= mydecode_utf8($deadline->{screen_name}) %>'>@<%= mydecode_utf8($deadline->{screen_name}) %></a></td>
 					<td><%= mydecode_utf8($deadline->{event_title}) %></td>
-					<td><%= mydecode_utf8($deadline->{event_date}) %></td>
+					<td><%= getJPNDate($deadline->{event_date}) %></td>
 					<td><%= mydecode_utf8($deadline->{event_description}) %></td>
           <td><%= $event_sense %></td>
-					<td><%= $date %></td>
+					<td><%= getJPNDate($deadline->{registration_date}) %></td>
 				</tr>
 			</tbody>
 		</table>
