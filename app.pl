@@ -7,7 +7,7 @@ use Net::Twitter::Lite;
 use Time::Piece;
 use MyApp::DB;
 use FormValidator::Lite;
-FormValidator::Lite->load_constraints(qw/DATE +MyApp::Validator::Constraint/);
+FormValidator::Lite->load_constraints(qw/+MyApp::Validator::Constraint/);
 
 # Documentation browser under "/perldoc"
 plugin 'PODRenderer';
@@ -98,8 +98,8 @@ post '/account' => sub {
 			'description.is_right_word' => '不正ワードが検出されました',
 		);
 		my $res = $validator->check(
-			title	=> [qw/NOT_NULL/],
-			date	=> [qw/DATE NOT_NULL/],
+			title	=> [qw/NOT_NULL IS_RIGHT_WORD/],
+			date	=> [qw/NOT_NULL/],
 			description => [qw/IS_RIGHT_WORD/],
 		);
 
@@ -139,8 +139,13 @@ get '/entry/:id' => sub {
 	my $c = shift;
 	my $id = $c->stash->{id};
 	my $itr = $db->search('Deadline', {id => $id},);
-	$c->stash->{deadline} = $itr->first->{row_data};
-	$c->render(template => 'entry');
+	if ($itr->count == 0) {
+		$c->redirect_to('/');
+	}
+	else {
+		$c->stash->{deadline} = $itr->first->{row_data};
+		$c->render(template => 'entry');
+	}
 };
 
 helper mydecode_utf8 => sub {

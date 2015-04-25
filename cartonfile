@@ -3,4 +3,5 @@ requires 'FindBin', '>= 1.15';
 requires 'Net::Twitter::Lite', '>= 0.12006';
 requires 'Time::Piece', '>= 1.29';
 requires 'FormValidator::Lite', '>= 0.38';
+requires 'DBD::SQLite';
 requires 'DBIx::Skinny', '>= 0.0742';

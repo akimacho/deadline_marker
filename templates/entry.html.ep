@@ -20,7 +20,10 @@
 			ログアウト</a>
 		% }
 		% else {
-		<a href="/login" data-ajax="false" class="ut-btn ui-btn-right">ログイン</a>
+		<a href="/" data-ajax="false"
+			 class="ui-btn ui-btn-leftui-btn-inline ui-shadow ui-corner-all">トップページ</a>
+			<a href="/login" data-ajax="false"
+				 class="ui-btn ui-btn-right ui-btn-inline ui-shadow ui-corner-all">ログイン</a>
 		% }
 	</div>
 	<div data-role="main" class="ui-content">
@@ -50,8 +53,5 @@
 			</tbody>
 		</table>
 		<p>注意:ここで公開されている情報は参考程度にとどめてください</p>
-	</div>
-	<div data-role="footer">
-		<h1>footer</h1>
 	</div>
 </div>

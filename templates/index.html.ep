@@ -28,16 +28,13 @@
 				% while (my $dl = $deadlines->next) {
 				<tr>
 					<td><%= mydecode_utf8($dl->id) %></td>
-					<td><a href='http://twitter.com/<%= mydecode_utf8($dl->screen_name) %>'>@<%= mydecode_utf8($dl->screen_name) %></a></td>
-					<td><a href='/entry/<%= $dl->id %>'><%= mydecode_utf8($dl->event_title) %></a></td>
+					<td><a href='http://twitter.com/<%= mydecode_utf8($dl->screen_name) %>' data-ajax="false">@<%= mydecode_utf8($dl->screen_name) %></a></td>
+					<td><a href='/entry/<%= $dl->id %>' data-ajax="false"><%= mydecode_utf8($dl->event_title) %></a></td>
 					<td><%= getJPNDate($dl->event_date) %></td>
 				</tr>
 				% }
 			</tbody>
 		</table>
 		<p>注意:ここで公開されている情報は参考程度にとどめてください</p>
-	</div>
-	<div data-role="footer">
-		<h1>footer</h1>
 	</div>
 </div>
