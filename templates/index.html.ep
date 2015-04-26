@@ -17,7 +17,10 @@
 		% }
 	</div>
 	<div data-role="main" class="ui-content">
-		<p>宇都宮大学情報工学科でのレポートや試験、休講情報を集めています</p>
+		<p>
+			宇都宮大学情報工学科でのレポートや試験、休講情報を登録するアプリです<br/>
+			登録された内容はtwitterのbotにつぶやかれます
+		</p>
 		<table data-role="table" class="ui-responsive ui-shadow table-stroke list">
 			<thead>
 				<tr>
