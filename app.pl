@@ -18,20 +18,20 @@ app->secrets([$config->{secret_password}]);
 my $config = plugin('Config');
 
 my $nt = Net::Twitter::Lite->new(
-	apiurl								=> 'http://api.twitter.com/1.1',
-	searchapiurl					=> 'http://api.twitter.com/1.1/search',
+	apiurl => 'http://api.twitter.com/1.1',
+	searchapiurl => 'http://api.twitter.com/1.1/search',
 	search_trends_api_url => 'http://api.twitter.com/1.1',
-	lists_api_url					=> 'http://api.twitter.com/1.1',
-	consumer_key					=> $config->{consumer_key},
-	consumer_secret				=> $config->{consumer_secret},
-	legacy_lists_api			=> 1,
-	ssl										=> 1,
+	lists_api_url => 'http://api.twitter.com/1.1',
+	consumer_key => $config->{consumer_key},
+	consumer_secret => $config->{consumer_secret},
+	legacy_lists_api => 1,
+	ssl => 1,
 );
 
 my $database = 'events.db';
 my $data_source = "dbi:SQLite:dbname=$database";
 my $db = MyApp::DB->new({
-	dsn			 => $data_source,
+	dsn  => $data_source,
 	username => '',
 	password => '',
 });
@@ -105,8 +105,8 @@ post '/account' => sub {
 			'description.is_right_word' => '不正ワードが検出されました',
 		);
 		my $res = $validator->check(
-			title	=> [qw/NOT_NULL IS_RIGHT_WORD/],
-			date	=> [qw/NOT_NULL/],
+			title => [qw/NOT_NULL IS_RIGHT_WORD/],
+			date => [qw/NOT_NULL/],
 			description => [qw/IS_RIGHT_WORD/],
 		);
 
@@ -116,20 +116,20 @@ post '/account' => sub {
 		}
 		else 
 			my $event_title = $c->req->param('title');
-			my $event_date	= $c->req->param('date');
+			my $event_date = $c->req->param('date');
 			my $event_sense = $c->req->param('event_sense');
 			my $description = $c->req->param('description');
 			my $t = localtime;
 			my $reg_date = join('-', ($t->year, $t->mon, $t->mday, $t->hour, $t->min, $t->sec));
 			$db->insert('Deadline', {
 				screen_name => $c->session('screen_name'),
-				event_title	=> $event_title,
+				event_title => $event_title,
 				user_id	=> $c->session('user_id'),
 				event_date => $event_date,
 				event_sense => $event_sense,
 				event_description => $description,
 				good => 0,
-				bad	=> 0,
+				bad => 0,
 				registration_date => $reg_date,
 			});
 			$c->stash->{messages} = [qw/入力を受付けました/];
