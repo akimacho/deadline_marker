@@ -7,8 +7,10 @@ use MyApp::Validator::Words;
 use utf8;
 use Encode qw/decode_utf8/;
 
+my $database = "$FindBin::Bin/" . 'words.db';
+my $data_source = "dbi:SQLite:dbname=$database";
 my $db = MyApp::Validator::Words->new({
-	dsn			 => 'dbi:SQLite:dbname=words.db',
+	dsn => $data_source,
 	username => '',
 	password => '',
 });
